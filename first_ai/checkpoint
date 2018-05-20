@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/tyler/projects/OpenAI/first_ai/myModel.model"
+all_model_checkpoint_paths: "/home/tyler/projects/OpenAI/first_ai/myModel.model"

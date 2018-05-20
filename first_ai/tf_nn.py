@@ -11,10 +11,11 @@ print "hello"
 
 LR = 1e-3
 env = gym.make('CartPole-v0')
+env._max_episode_steps = 500
 env.reset()
 goal_steps = 500
-score_req = 50
-initial_games = 10000 # 10000
+score_req = 100
+initial_games = 100000 # 10000
 
 def random_games():
    for episode in range(100):
@@ -86,7 +87,7 @@ def train_model(training_data, model=False):
    y = [i[1] for i in training_data]
    if not model:
       model = neural_network_model(input_size = len(X[0]))
-   model.fit({'input':X}, {'targets':y}, n_epoch=5, snapshot_step=500, show_metric=True, run_id='openaistuff')
+   model.fit({'input':X}, {'targets':y}, n_epoch=4, snapshot_step=500, show_metric=True, run_id='openaistuff')
    return model
 
 training_data = initial_population()
@@ -102,13 +103,13 @@ model = train_model(training_data)
 scores = []
 choices = []
 
-for each_game in range(10):
+for each_game in range(100):
    score = 0
    game_memory = []
    prev_obs = []
    env.reset()
    for _ in range(goal_steps):
-      env.render()
+      #env.render()
       if len(prev_obs) == 0:
          action = env.action_space.sample()
       else:
@@ -124,6 +125,9 @@ for each_game in range(10):
 
 print("Average Score: ", sum(scores)/len(scores))
 print("Choice 1: {}, Choice 0: {}".format(float(choices.count(1))/float(len(choices)), float(choices.count(0))/float(len(choices))))
+
+if (sum(scores)/len(scores)) > 450:
+   model.save('myModel.model')
 
 
 
