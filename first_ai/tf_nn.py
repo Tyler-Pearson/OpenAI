@@ -87,7 +87,7 @@ def train_model(training_data, model=False):
    y = [i[1] for i in training_data]
    if not model:
       model = neural_network_model(input_size = len(X[0]))
-   model.fit({'input':X}, {'targets':y}, n_epoch=4, snapshot_step=500, show_metric=True, run_id='openaistuff')
+   model.fit({'input':X}, {'targets':y}, n_epoch=5, snapshot_step=500, show_metric=True, run_id='openaistuff')
    return model
 
 training_data = initial_population()
@@ -109,7 +109,8 @@ for each_game in range(100):
    prev_obs = []
    env.reset()
    for _ in range(goal_steps):
-      #env.render()
+      if each_game > 90:
+         env.render()
       if len(prev_obs) == 0:
          action = env.action_space.sample()
       else:
@@ -126,8 +127,8 @@ for each_game in range(100):
 print("Average Score: ", sum(scores)/len(scores))
 print("Choice 1: {}, Choice 0: {}".format(float(choices.count(1))/float(len(choices)), float(choices.count(0))/float(len(choices))))
 
-if (sum(scores)/len(scores)) > 450:
-   model.save('myModel.model')
+#if (sum(scores)/len(scores)) > 450:
+#   model.save('myModel.model')
 
 
 
