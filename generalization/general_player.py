@@ -6,17 +6,8 @@ from tflearn.layers.estimator import regression
 from statistics import mean, median
 from collections import Counter
 
-print "hi"
 
-LR = 1e-3
-env = gym.make('CartPole-v0')
-max_steps = 500
-env._max_episode_steps = max_steps
-env.reset()
-score_req = 100
-initial_games = 100000
-
-def play_game(goal_steps, display, model):
+def play_game(env, goal_steps, display, model):
    score = 0
    game_memory = []
    prev_obs = []
@@ -37,26 +28,24 @@ def play_game(goal_steps, display, model):
          break
    return score, game_memory
 
-def initial_population(pop_size, goal_steps, min_threshold):
+
+def get_pop(env, action_count, pop_size, goal_steps, min_threshold, model):
    scores = []
    training_data = []
    accepted_scores = []
-   for _ in range(pop_size):
-      score, game_memory = play_game(goal_steps, False, None)
+   while len(accepted_scores) < pop_size:
+      score, game_memory = play_game(env, goal_steps, False, model)
       if score > min_threshold:
          accepted_scores.append(score)
          for data in game_memory:
-            if data[1] == 1:
-               output = [0,1]
-            elif data[1] == 0:
-               output = [1,0]
+            output = np.zeros(action_count)
+            output[data[1]] = 1
             training_data.append([data[0], output])
       scores.append(score)
-   training_data_save = np.array(training_data)
-   np.save("saved.npy", training_data_save)
    return training_data, accepted_scores, scores
 
-def neural_network_model(input_size):
+
+def neural_network_model(input_size, action_count, LR=1e-3):
    network = input_data(shape=[None, input_size, 1], name='input')
    network = fully_connected(network, 128, activation='relu')
    network = dropout(network, 0.8)
@@ -68,35 +57,69 @@ def neural_network_model(input_size):
    network = dropout(network, 0.8)
    network = fully_connected(network, 128, activation='relu')
    network = dropout(network, 0.8)
-   network = fully_connected(network, 2, activation='softmax') #output layers
+   network = fully_connected(network, action_count, activation='softmax') #output layers
    network = regression(network, optimizer='adam', learning_rate=LR, loss='categorical_crossentropy', name='targets')
    model = tflearn.DNN(network, tensorboard_dir='log')
    return model
 
-def train_model(training_data, model=False):
+
+def train_model(training_data, action_count, max_steps, model=False):
    X = np.array([i[0] for i in training_data]).reshape(-1, len(training_data[0][0]), 1)
    y = [i[1] for i in training_data]
    if not model:
-      model = neural_network_model(input_size = len(X[0]))
-   model.fit({'input':X}, {'targets':y}, n_epoch=4, snapshot_step=max_steps, show_metric=True, run_id='openaistuff')
+      model = neural_network_model(input_size = len(X[0]), action_count=action_count)
+   #n_epoch should be determined dynamically
+   model.fit({'input':X}, {'targets':y}, n_epoch=5, snapshot_step=max_steps, show_metric=True, run_id='openaistuff')
    return model
 
-def test_model(model):
+
+def test_model(env, model, max_steps):
    test_scores = []
    for i in range(100):
-      score, mem = play_game(max_steps, i < 10, model)
+      score, mem = play_game(env, max_steps, i < 5, model)
+      if (i < 5):
+         print("Test {}: {}".format(i+1, score))
       test_scores.append(score)
-   print("Average test score: ", mean(test_scores))
-   print("Scores: ", Counter(test_scores))
+   print("Average test score: {}".format(mean(test_scores)))
+   print("Scores: {}".format(Counter(test_scores)))
 
-training_data, accepted, train_scores = initial_population(initial_games, max_steps, score_req)
-print("Average training score: ", mean(train_scores))
-print("Average accepted mean: ", mean(accepted))
-print("Accepted count: ", Counter(accepted))
 
-model = train_model(training_data)
+def play(game_name, max_steps):
+   env = gym.make(game_name)
+   env._max_episode_steps = max_steps
+   action_count = env.action_space.n
+   score_req = 110 # find these dynamically
+   pop_size = 40
 
-test_model(model)
+   training_data, accepted, train_scores = get_pop(env, action_count, pop_size, max_steps, score_req, None)
+   print("Average training score: {}".format(mean(train_scores)))
+   print("Average accepted mean: {}".format(mean(accepted)))
+   print("Accepted count: {}".format(Counter(accepted)))
+
+   model = train_model(training_data, action_count, max_steps)
+
+   test_model(env, model, max_steps)
+
+
+def play_mc():
+   env = gym.make('MountainCar-v0')
+   env._max_episode_steps = 500
+   action_count = env.action_space.n
+   count = 0
+   for i in range(10000):
+      score, mem = play_game(env, 500, False, None)
+      if score > -500:
+         count += 1
+   print("Wins: {}".format(count))
+
+
+def main():
+   play('CartPole-v0', 500)
+#   play_mc()
+
+
+if __name__ == "__main__":
+   main()
 
 
 
