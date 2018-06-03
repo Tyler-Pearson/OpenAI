@@ -100,17 +100,16 @@ def play(game_name, max_steps, score_req):
    test_model(env, model, max_steps)
 
 
-def demo(game_name):
-   max_s = 2000
+def demo(game_name, steps, accepted, disp_count):
    env = gym.make(game_name)
-   env._max_episode_steps = max_s
+   env._max_episode_steps = steps
    action_count = env.action_space.n
    count = 0
-   print("\nDemo-ing {}\n---------\nrandom moves\ndisplay first 10 games".format(game_name))
-   for i in range(1000):
-      score, mem = play_game(env, max_s, i < 10, None)
-      print("Score: {}".format(score))
-      if score > -1*max_s:
+   print("\nDemo-ing {}\n---------\nrandom moves\ndisplay first {} games".format(game_name, disp_count))
+   for i in range(500):
+      score, mem = play_game(env, steps, i < disp_count, None)
+#      print("Score: {}".format(score))
+      if score > accepted:
          count += 1
    print("Wins: {}".format(count))
 
@@ -118,7 +117,8 @@ def demo(game_name):
 def main():
 #   play('CartPole-v0', 500, 120)
 #   play('MountainCar-v0', 2000, -1250)
-   demo('Acrobat-v0')
+#   play('Acrobot-v1', 1500, -700)
+   demo('MountainCar-v0', 1500, -700, 5)
 
 
 if __name__ == "__main__":
