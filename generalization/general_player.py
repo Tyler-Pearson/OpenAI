@@ -84,11 +84,10 @@ def test_model(env, model, max_steps):
    print("Scores: {}".format(Counter(test_scores)))
 
 
-def play(game_name, max_steps):
+def play(game_name, max_steps, score_req):
    env = gym.make(game_name)
    env._max_episode_steps = max_steps
    action_count = env.action_space.n
-   score_req = 110 # find these dynamically
    pop_size = 40
 
    training_data, accepted, train_scores = get_pop(env, action_count, pop_size, max_steps, score_req, None)
@@ -101,21 +100,25 @@ def play(game_name, max_steps):
    test_model(env, model, max_steps)
 
 
-def play_mc():
-   env = gym.make('MountainCar-v0')
-   env._max_episode_steps = 500
+def demo(game_name):
+   max_s = 2000
+   env = gym.make(game_name)
+   env._max_episode_steps = max_s
    action_count = env.action_space.n
    count = 0
-   for i in range(10000):
-      score, mem = play_game(env, 500, False, None)
-      if score > -500:
+   print("\nDemo-ing {}\n---------\nrandom moves\ndisplay first 10 games".format(game_name))
+   for i in range(1000):
+      score, mem = play_game(env, max_s, i < 10, None)
+      print("Score: {}".format(score))
+      if score > -1*max_s:
          count += 1
    print("Wins: {}".format(count))
 
 
 def main():
-   play('CartPole-v0', 500)
-#   play_mc()
+#   play('CartPole-v0', 500, 120)
+#   play('MountainCar-v0', 2000, -1250)
+   demo('Acrobat-v0')
 
 
 if __name__ == "__main__":
