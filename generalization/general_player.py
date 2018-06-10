@@ -1,3 +1,4 @@
+import time
 import gym
 import numpy as np
 import tflearn
@@ -97,27 +98,35 @@ def play(game_name, max_steps, score_req):
 
    model = train_model(training_data, action_count, max_steps)
 
+   raw_input("Press enter to test model...")
    test_model(env, model, max_steps)
 
 
 def demo(game_name, steps, accepted, disp_count):
+   raw_input("Press enter to demo...")
    env = gym.make(game_name)
    env._max_episode_steps = steps
    action_count = env.action_space.n
    count = 0
-   print("\nDemo-ing {}\n---------\nrandom moves\ndisplay first {} games".format(game_name, disp_count))
-   for i in range(500):
+   score_total = 0
+   print("\nDemo-ing {}\n---------\nrandom moves\ndisplay first {} of 10 games".format(game_name, disp_count))
+   for i in range(10):
       score, mem = play_game(env, steps, i < disp_count, None)
 #      print("Score: {}".format(score))
+      if (i < disp_count):
+         print("score: {}".format(score))
+         time.sleep(0.5)
+      score_total += score
       if score > accepted:
          count += 1
-   print("Wins: {}".format(count))
+   print("Wins out of 10 attempts: {}".format(count))
+   print("Avg random moves score: {}".format(score_total / 10))
 
 
 def main():
-#   play('CartPole-v0', 500, 120)
-#   play('MountainCar-v0', 2000, -1250)
-#   play('Acrobot-v1', 1500, -700)
+#   play('CartPole-v0', 500, 130)
+#   play('MountainCar-v0', 1000, -950)
+#   play('Acrobot-v1', 1500, -1200)
    demo('MountainCar-v0', 1500, -700, 5)
 
 
