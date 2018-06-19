@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html>
+
+   <head>
+      <title>General Game Player -- Tyler Pearson</title>
+      <meta charset="utf-8"/>
+   </head>
+
+   <style>
+      body {
+         background:#190729;
+         color:#FFFFFF;
+         margin: 5%
+      }
+      h1 {
+         color:#9400D3
+      }
+      h2 {
+         color:#9400D3
+      }
+   </style>
+
+   <h1> General Game Player </h1>
+   <h3> Tyler Pearson </h3>
+
+   <body>
+      <hr>
+      <br>
+      <p align="center"> Program that learns to play OpenAI Gym games using a TFLearn Neural Network in Python </p>
+      <br><hr><br>
+
+      <h2> Overview </h2>
+      <p> The goal in making general game playing algorithms is to
+          create a program that is able to successfully learn to play
+          as many different kinds of games as possible. My approach is
+          modeled after one published by sentdex (linked below). On a
+          general level, it plays a large number of random games. From
+          this population, it uses data from games that meets a
+          certain score threshold to create a neural network that maps
+          attributes of the current environment (ie user position,
+          pole angle, cart velocity, etc) to the expected value of
+          possible moves (ie move right, move left, etc). <br><br>
+
+          The gifs below are screencaptures of sample runs of an agent
+          playing different games with random moves (left side) vs a
+          trained neural network agent playing the same games (right
+          side). The pictures following those gifs show the scores of
+          sample runs of a trained neural network agent. The first
+          (left) is from CartPole with possible scores ranging from 0
+          (worst) to 500 (best). Next (middle) is MountainCar, -500
+          (worst) to 0 (best). Finally (right) Acrobot, -500 (worst) to
+          0 (best). <br><br>
+
+          Further details including my initial goal for the project,
+          stumbling points, shortcomings and successes are provided in
+          my project write-up (linked below). Apologies for the chaos
+          and general messiness of this site, it was all thrown together
+          on limited time and webdev experience! </p>
+      <br><hr><br>
+
+      <h2> Sample Games </h2>
+      <br>
+      <h3 align="center">  Random &emsp; &emsp; &emsp; vs &emsp; &emsp; &emsp; Trained </h3>
+      <br>
+      <h4> CartPole </h4>
+      <p> Goal: Balance stick on cart for as long as possible </p>
+      <div align="center">
+         <img src="rsc/DemoCartPole.gif" alt="Random" width="500"/>
+         <img src="rsc/PlayCartPole.gif" alt="Trained" width="500"/>
+      </div>
+      <br>
+      <h4> MountainCar </h4>
+      <p> Goal: Get car to top of hill as quickly as possible </p>
+      <div align="center">
+         <img src="rsc/DemoMountainCar.gif" alt="Random" width="500"/>
+         <img src="rsc/PlayMountainCar.gif" alt="Trained" width="500"/>
+      </div>
+      <br>
+      <h4> Acrobot </h4>
+      <p> Goal: Raise robotic arm to threshold elevation as quickly as possible </p>
+      <div align="center">
+         <img src="rsc/DemoAcrobot.gif" alt="Random" width="500"/>
+         <img src="rsc/PlayAcrobot.gif" alt="Trained" width="500"/>
+      </div>
+      <br>
+      <h3 align="center"> Sample Trained Scores </h3>
+      <div align="center">
+         <img src="rsc/CartPoleResults.png" alt="Scores out of 500" width="330"/>
+         <img src="rsc/MountainCarResults.png" alt="Scores from 0 to -500" width="330"/>
+         <img src="rsc/AcrobotResults.png" alt="Scores fomr 0 to -500" width="330"/>
+      </div>
+      <br><hr><br>
+
+      <h2> Related Links </h2>
+      <ul>
+         <li> <a href="https://github.com/Tyler-Pearson/OpenAI/tree/master/generalization">
+                Source Code </a> </li>
+         <li> <a href="https://docs.google.com/document/d/e/2PACX-1vQgVGogiKAS5So-N7bHeMbCAMa5vhWNygc6pu6fchHi2pXMwOrgNVjWQFjXnXEe-6_zVwGV2teS3mdS/pub">
+                Final (Semi-informal) Report </a> </li>
+         <li> <a href="https://www.youtube.com/watch?v=qv6UVOQ0F44">
+                Inspiration: MarI/O by Seth Bling </a> </li>
+         <li> <a href="https://www.youtube.com/watch?v=3zeg7H6cAJw&t=14s">
+                OpenAI with NeuralNetwork Tutorial </a> </li>
+         <li> <a href="https://gym.openai.com/">
+                OpenAI Gym (See env's and documentation) </a> </li>
+         <li> <a href="http://tflearn.org/">
+                TFLearn </a> </li>
+         <li> <a href="https://github.com/phw/peek/releases">
+                Gifs - Peek </a> </li>
+      </ul>
+
+   </body>
+</html>
+
